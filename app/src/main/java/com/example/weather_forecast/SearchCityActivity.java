@@ -71,7 +71,7 @@ public class SearchCityActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onSuccess(String result) {
         WeatherInfoBean weatherInfoBean = new Gson().fromJson(result, WeatherInfoBean.class);
-        if (weatherInfoBean.getError() == 0) {
+        if (weatherInfoBean.getError_code() == 0) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("city", city);

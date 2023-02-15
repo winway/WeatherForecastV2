@@ -8,7 +8,13 @@ package com.example.weather_forecast.common;
  * @Description:
  **/
 public class URLHelper {
+    private static final String KEY = "3cef7226d9ae810d67346c890867e3c0";
+
     public static String getWeatherUrl(String cityName) {
-        return "https://www.fastmock.site/mock/80cdea24781c3dec709e535376570531/testapi/weather?city=" + cityName;
+        return "http://apis.juhe.cn/simpleWeather/query?city=" + cityName + "&key=" + KEY;
+    }
+
+    public static String getIndexUrl(String cityName) {
+        return "http://apis.juhe.cn/simpleWeather/life?city=" + cityName + "&key=" + KEY;
     }
 }

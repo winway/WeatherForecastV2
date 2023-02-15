@@ -12,156 +12,164 @@ import java.util.List;
 public class WeatherInfoBean {
 
     /**
-     * error : 0
-     * status : success
-     * date : 2019-11-05
-     * results : [{"currentCity":"北京","pm25":"45","index":[{"des":"建议着厚外套加毛衣等服装。年老体弱者宜着大衣、呢外套加羊毛衫。","tipt":"穿衣指数","title":"穿衣","zs":"较冷"},{"des":"适宜洗车，未来持续两天无雨天气较好，适合擦洗汽车，蓝天白云、风和日丽将伴您的车子连日洁净。","tipt":"洗车指数","title":"洗车","zs":"适宜"},{"des":"昼夜温差较大，较易发生感冒，请适当增减衣服。体质较弱的朋友请注意防护。","tipt":"感冒指数","title":"感冒","zs":"较易发"},{"des":"天气较好，无雨水困扰，较适宜进行各种运动，但因气温较低，在户外运动请注意增减衣物。","tipt":"运动指数","title":"运动","zs":"较适宜"},{"des":"属中等强度紫外线辐射天气，外出时建议涂擦SPF高于15、PA+的防晒护肤品，戴帽子、太阳镜。","tipt":"紫外线强度指数","title":"紫外线强度","zs":"中等"}],"weather_data":[{"date":"周二 11月05日 (实时：14℃)","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/duoyun.png","weather":"晴转多云","wind":"南风微风","temperature":"17 ~ 6℃"},{"date":"周三","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/qing.png","weather":"晴","wind":"西南风微风","temperature":"16 ~ 5℃"},{"date":"周四","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/qing.png","weather":"晴","wind":"东北风微风","temperature":"13 ~ 1℃"},{"date":"周五","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/duoyun.png","weather":"晴转多云","wind":"西风微风","temperature":"16 ~ 2℃"}]}]
+     * reason : 查询成功!
+     * result : {"city":"西安","realtime":{"temperature":"2","humidity":"89","info":"多云","wid":"01","direct":"东北风","power":"2级","aqi":"46"},"future":[{"date":"2023-02-14","temperature":"-1/8℃","weather":"晴转多云","wid":{"day":"00","night":"01"},"direct":"持续无风向"},{"date":"2023-02-15","temperature":"0/6℃","weather":"多云","wid":{"day":"01","night":"01"},"direct":"持续无风向"},{"date":"2023-02-16","temperature":"1/9℃","weather":"多云","wid":{"day":"01","night":"01"},"direct":"持续无风向"},{"date":"2023-02-17","temperature":"4/13℃","weather":"多云转阴","wid":{"day":"01","night":"02"},"direct":"持续无风向"},{"date":"2023-02-18","temperature":"4/10℃","weather":"多云","wid":{"day":"01","night":"01"},"direct":"持续无风向"}]}
+     * error_code : 0
      */
 
-    private int error;
-    private String status;
-    private String date;
-    private List<ResultsBean> results;
+    private String reason;
+    private ResultBean result;
+    private int error_code;
 
-    public int getError() {
-        return error;
+    public String getReason() {
+        return reason;
     }
 
-    public void setError(int error) {
-        this.error = error;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
-    public String getStatus() {
-        return status;
+    public ResultBean getResult() {
+        return result;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setResult(ResultBean result) {
+        this.result = result;
     }
 
-    public String getDate() {
-        return date;
+    public int getError_code() {
+        return error_code;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setError_code(int error_code) {
+        this.error_code = error_code;
     }
 
-    public List<ResultsBean> getResults() {
-        return results;
-    }
-
-    public void setResults(List<ResultsBean> results) {
-        this.results = results;
-    }
-
-    public static class ResultsBean {
+    public static class ResultBean {
         /**
-         * currentCity : 北京
-         * pm25 : 45
-         * index : [{"des":"建议着厚外套加毛衣等服装。年老体弱者宜着大衣、呢外套加羊毛衫。","tipt":"穿衣指数","title":"穿衣","zs":"较冷"},{"des":"适宜洗车，未来持续两天无雨天气较好，适合擦洗汽车，蓝天白云、风和日丽将伴您的车子连日洁净。","tipt":"洗车指数","title":"洗车","zs":"适宜"},{"des":"昼夜温差较大，较易发生感冒，请适当增减衣服。体质较弱的朋友请注意防护。","tipt":"感冒指数","title":"感冒","zs":"较易发"},{"des":"天气较好，无雨水困扰，较适宜进行各种运动，但因气温较低，在户外运动请注意增减衣物。","tipt":"运动指数","title":"运动","zs":"较适宜"},{"des":"属中等强度紫外线辐射天气，外出时建议涂擦SPF高于15、PA+的防晒护肤品，戴帽子、太阳镜。","tipt":"紫外线强度指数","title":"紫外线强度","zs":"中等"}]
-         * weather_data : [{"date":"周二 11月05日 (实时：14℃)","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/duoyun.png","weather":"晴转多云","wind":"南风微风","temperature":"17 ~ 6℃"},{"date":"周三","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/qing.png","weather":"晴","wind":"西南风微风","temperature":"16 ~ 5℃"},{"date":"周四","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/qing.png","weather":"晴","wind":"东北风微风","temperature":"13 ~ 1℃"},{"date":"周五","dayPictureUrl":"http://api.map.baidu.com/images/weather/day/qing.png","nightPictureUrl":"http://api.map.baidu.com/images/weather/night/duoyun.png","weather":"晴转多云","wind":"西风微风","temperature":"16 ~ 2℃"}]
+         * city : 西安
+         * realtime : {"temperature":"2","humidity":"89","info":"多云","wid":"01","direct":"东北风","power":"2级","aqi":"46"}
+         * future : [{"date":"2023-02-14","temperature":"-1/8℃","weather":"晴转多云","wid":{"day":"00","night":"01"},"direct":"持续无风向"},{"date":"2023-02-15","temperature":"0/6℃","weather":"多云","wid":{"day":"01","night":"01"},"direct":"持续无风向"},{"date":"2023-02-16","temperature":"1/9℃","weather":"多云","wid":{"day":"01","night":"01"},"direct":"持续无风向"},{"date":"2023-02-17","temperature":"4/13℃","weather":"多云转阴","wid":{"day":"01","night":"02"},"direct":"持续无风向"},{"date":"2023-02-18","temperature":"4/10℃","weather":"多云","wid":{"day":"01","night":"01"},"direct":"持续无风向"}]
          */
 
-        private String currentCity;
-        private String pm25;
-        private List<IndexBean> index;
-        private List<WeatherDataBean> weather_data;
+        private String city;
+        private RealtimeBean realtime;
+        private List<FutureBean> future;
 
-        public String getCurrentCity() {
-            return currentCity;
+        public String getCity() {
+            return city;
         }
 
-        public void setCurrentCity(String currentCity) {
-            this.currentCity = currentCity;
+        public void setCity(String city) {
+            this.city = city;
         }
 
-        public String getPm25() {
-            return pm25;
+        public RealtimeBean getRealtime() {
+            return realtime;
         }
 
-        public void setPm25(String pm25) {
-            this.pm25 = pm25;
+        public void setRealtime(RealtimeBean realtime) {
+            this.realtime = realtime;
         }
 
-        public List<IndexBean> getIndex() {
-            return index;
+        public List<FutureBean> getFuture() {
+            return future;
         }
 
-        public void setIndex(List<IndexBean> index) {
-            this.index = index;
+        public void setFuture(List<FutureBean> future) {
+            this.future = future;
         }
 
-        public List<WeatherDataBean> getWeather_data() {
-            return weather_data;
-        }
-
-        public void setWeather_data(List<WeatherDataBean> weather_data) {
-            this.weather_data = weather_data;
-        }
-
-        public static class IndexBean {
+        public static class RealtimeBean {
             /**
-             * des : 建议着厚外套加毛衣等服装。年老体弱者宜着大衣、呢外套加羊毛衫。
-             * tipt : 穿衣指数
-             * title : 穿衣
-             * zs : 较冷
+             * temperature : 2
+             * humidity : 89
+             * info : 多云
+             * wid : 01
+             * direct : 东北风
+             * power : 2级
+             * aqi : 46
              */
 
-            private String des;
-            private String tipt;
-            private String title;
-            private String zs;
+            private String temperature;
+            private String humidity;
+            private String info;
+            private String wid;
+            private String direct;
+            private String power;
+            private String aqi;
 
-            public String getDes() {
-                return des;
+            public String getTemperature() {
+                return temperature;
             }
 
-            public void setDes(String des) {
-                this.des = des;
+            public void setTemperature(String temperature) {
+                this.temperature = temperature;
             }
 
-            public String getTipt() {
-                return tipt;
+            public String getHumidity() {
+                return humidity;
             }
 
-            public void setTipt(String tipt) {
-                this.tipt = tipt;
+            public void setHumidity(String humidity) {
+                this.humidity = humidity;
             }
 
-            public String getTitle() {
-                return title;
+            public String getInfo() {
+                return info;
             }
 
-            public void setTitle(String title) {
-                this.title = title;
+            public void setInfo(String info) {
+                this.info = info;
             }
 
-            public String getZs() {
-                return zs;
+            public String getWid() {
+                return wid;
             }
 
-            public void setZs(String zs) {
-                this.zs = zs;
+            public void setWid(String wid) {
+                this.wid = wid;
+            }
+
+            public String getDirect() {
+                return direct;
+            }
+
+            public void setDirect(String direct) {
+                this.direct = direct;
+            }
+
+            public String getPower() {
+                return power;
+            }
+
+            public void setPower(String power) {
+                this.power = power;
+            }
+
+            public String getAqi() {
+                return aqi;
+            }
+
+            public void setAqi(String aqi) {
+                this.aqi = aqi;
             }
         }
 
-        public static class WeatherDataBean {
+        public static class FutureBean {
             /**
-             * date : 周二 11月05日 (实时：14℃)
-             * dayPictureUrl : http://api.map.baidu.com/images/weather/day/qing.png
-             * nightPictureUrl : http://api.map.baidu.com/images/weather/night/duoyun.png
+             * date : 2023-02-14
+             * temperature : -1/8℃
              * weather : 晴转多云
-             * wind : 南风微风
-             * temperature : 17 ~ 6℃
+             * wid : {"day":"00","night":"01"}
+             * direct : 持续无风向
              */
 
             private String date;
-            private String dayPictureUrl;
-            private String nightPictureUrl;
-            private String weather;
-            private String wind;
             private String temperature;
+            private String weather;
+            private WidBean wid;
+            private String direct;
 
             public String getDate() {
                 return date;
@@ -171,20 +179,12 @@ public class WeatherInfoBean {
                 this.date = date;
             }
 
-            public String getDayPictureUrl() {
-                return dayPictureUrl;
+            public String getTemperature() {
+                return temperature;
             }
 
-            public void setDayPictureUrl(String dayPictureUrl) {
-                this.dayPictureUrl = dayPictureUrl;
-            }
-
-            public String getNightPictureUrl() {
-                return nightPictureUrl;
-            }
-
-            public void setNightPictureUrl(String nightPictureUrl) {
-                this.nightPictureUrl = nightPictureUrl;
+            public void setTemperature(String temperature) {
+                this.temperature = temperature;
             }
 
             public String getWeather() {
@@ -195,20 +195,46 @@ public class WeatherInfoBean {
                 this.weather = weather;
             }
 
-            public String getWind() {
-                return wind;
+            public WidBean getWid() {
+                return wid;
             }
 
-            public void setWind(String wind) {
-                this.wind = wind;
+            public void setWid(WidBean wid) {
+                this.wid = wid;
             }
 
-            public String getTemperature() {
-                return temperature;
+            public String getDirect() {
+                return direct;
             }
 
-            public void setTemperature(String temperature) {
-                this.temperature = temperature;
+            public void setDirect(String direct) {
+                this.direct = direct;
+            }
+
+            public static class WidBean {
+                /**
+                 * day : 00
+                 * night : 01
+                 */
+
+                private String day;
+                private String night;
+
+                public String getDay() {
+                    return day;
+                }
+
+                public void setDay(String day) {
+                    this.day = day;
+                }
+
+                public String getNight() {
+                    return night;
+                }
+
+                public void setNight(String night) {
+                    this.night = night;
+                }
             }
         }
     }

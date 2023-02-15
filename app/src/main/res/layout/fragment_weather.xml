@@ -169,7 +169,13 @@
                     android:layout_height="match_parent"
                     android:background="#2E8B57" />
 
-                <TextView style="@style/WeatherIndexText" />
+                <TextView
+                    android:id="@+id/weather_index_air_cond_tv"
+                    style="@style/WeatherIndexText"
+                    android:layout_marginTop="10dp"
+                    android:drawablePadding="10dp"
+                    android:text="空调指数"
+                    app:drawableBottomCompat="@mipmap/icon_air" />
 
             </LinearLayout>
 

@@ -59,12 +59,14 @@ public class CityManageListAdapter extends BaseAdapter {
         CityBean cityBean = mData.get(i);
         holder.mCityTV.setText(cityBean.getCity());
         WeatherInfoBean weatherInfoBean = new Gson().fromJson(cityBean.getContent(), WeatherInfoBean.class);
-        WeatherInfoBean.ResultsBean resultsBean = weatherInfoBean.getResults().get(0);
-        WeatherInfoBean.ResultsBean.WeatherDataBean todayWeatherBean = resultsBean.getWeather_data().get(0);
-        String[] split = todayWeatherBean.getDate().split("[：|)]");
-        holder.mTempTV.setText(split[1]);
-        holder.mCondTV.setText(todayWeatherBean.getWeather());
-        holder.mWindTV.setText(todayWeatherBean.getWind());
+
+        WeatherInfoBean.ResultBean resultsBean = weatherInfoBean.getResult();
+        WeatherInfoBean.ResultBean.FutureBean todayWeatherBean = resultsBean.getFuture().get(0);
+        WeatherInfoBean.ResultBean.RealtimeBean realtimeBean = resultsBean.getRealtime();
+
+        holder.mTempTV.setText(realtimeBean.getTemperature() + "℃");
+        holder.mCondTV.setText(realtimeBean.getInfo());
+        holder.mWindTV.setText(realtimeBean.getDirect() + "" + realtimeBean.getPower());
         holder.mTempRangeTV.setText(todayWeatherBean.getTemperature());
 
         return view;

@@ -22,6 +22,14 @@
         tools:text="晴" />
 
     <TextView
+        android:id="@+id/item_future_wind_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="16sp"
+        tools:text="风向" />
+
+    <TextView
         android:id="@+id/item_future_temp_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

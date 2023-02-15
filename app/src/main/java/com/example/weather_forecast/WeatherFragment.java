@@ -1,9 +1,10 @@
 package com.example.weather_forecast;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,14 +15,17 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
+import com.example.weather_forecast.bean.IndexInfoBean;
 import com.example.weather_forecast.bean.WeatherInfoBean;
 import com.example.weather_forecast.common.BaseFragment;
 import com.example.weather_forecast.common.URLHelper;
 import com.example.weather_forecast.db.DBManager;
+import com.example.weather_forecast.utils.HttpUtils;
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -33,6 +37,7 @@ import java.util.List;
 public class WeatherFragment extends BaseFragment implements View.OnClickListener {
     private static final String TAG = "WeatherFragment";
     private static final String ARG_CITY = "city";
+    private static final int MSG_INDEX_DATA = 1;
 
     private ScrollView mWeatherSv;
 
@@ -51,9 +56,19 @@ public class WeatherFragment extends BaseFragment implements View.OnClickListene
     private TextView mIndexColdTv;
     private TextView mIndexSportTv;
     private TextView mIndexRayTv;
+    private TextView mAirCondTv;
 
     private String city;
-    private List<WeatherInfoBean.ResultsBean.IndexBean> mIndexBeanList;
+    private IndexInfoBean mIndexInfoBean;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            if (msg.what == MSG_INDEX_DATA) {
+                String result = (String) msg.obj;
+                mIndexInfoBean = new Gson().fromJson(result, IndexInfoBean.class);
+            }
+        }
+    };
 
     public static WeatherFragment newInstance(String city) {
         Bundle args = new Bundle();
@@ -79,7 +94,25 @@ public class WeatherFragment extends BaseFragment implements View.OnClickListene
         Log.i(TAG, "onCreateView: " + url);
         loadData(url);
 
+        loadIndexData();
+
         return view;
+    }
+
+    private void loadIndexData() {
+        String url = URLHelper.getIndexUrl(city);
+        Log.i(TAG, "loadIndexData: " + url);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String result = HttpUtils.getString(url);
+                Message message = mHandler.obtainMessage();
+                message.what = MSG_INDEX_DATA;
+                message.obj = result;
+                mHandler.sendMessage(message);
+            }
+        }).start();
     }
 
     private void setBg() {
@@ -107,25 +140,22 @@ public class WeatherFragment extends BaseFragment implements View.OnClickListene
 
     private void parseData(String result) {
         WeatherInfoBean weatherInfoBean = new Gson().fromJson(result, WeatherInfoBean.class);
-        if (weatherInfoBean.getError() != 0) {
-            Log.i(TAG, "parseData: " + weatherInfoBean.getStatus());
+        if (weatherInfoBean.getError_code() != 0) {
+            Log.i(TAG, "parseData: " + weatherInfoBean.getReason());
             return;
         }
-        WeatherInfoBean.ResultsBean resultsBean = weatherInfoBean.getResults().get(0);
-        resultsBean.setCurrentCity(city);
-        mIndexBeanList = resultsBean.getIndex();
-        WeatherInfoBean.ResultsBean.WeatherDataBean todayWeatherBean = resultsBean.getWeather_data().get(0);
+        WeatherInfoBean.ResultBean resultsBean = weatherInfoBean.getResult();
+        WeatherInfoBean.ResultBean.FutureBean todayWeatherBean = resultsBean.getFuture().get(0);
+        WeatherInfoBean.ResultBean.RealtimeBean realtimeBean = resultsBean.getRealtime();
 
-        String[] split = todayWeatherBean.getDate().split("[：|)]");
-        mTempTv.setText(split[1]);
-        mCityTv.setText(resultsBean.getCurrentCity());
-        mCondTv.setText(todayWeatherBean.getWeather());
-        mDateTv.setText(weatherInfoBean.getDate());
-        mWindTv.setText(todayWeatherBean.getWind());
+        mTempTv.setText(realtimeBean.getTemperature() + "℃");
+        mCityTv.setText(resultsBean.getCity());
+        mCondTv.setText(realtimeBean.getInfo());
+        mDateTv.setText(todayWeatherBean.getDate());
+        mWindTv.setText(realtimeBean.getDirect() + "" + realtimeBean.getPower());
         mTempRangeTv.setText(todayWeatherBean.getTemperature());
-        Picasso.with(getActivity()).load(todayWeatherBean.getDayPictureUrl()).into(mPicTv);
 
-        List<WeatherInfoBean.ResultsBean.WeatherDataBean> futureWeatherList = resultsBean.getWeather_data();
+        List<WeatherInfoBean.ResultBean.FutureBean> futureWeatherList = resultsBean.getFuture();
         futureWeatherList.remove(0);
         for (int i = 0; i < futureWeatherList.size(); i++) {
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.item_weather_future, null);
@@ -133,14 +163,15 @@ public class WeatherFragment extends BaseFragment implements View.OnClickListene
             mFutureLl.addView(view);
             TextView fDateTv = view.findViewById(R.id.item_future_date_tv);
             TextView fCondTv = view.findViewById(R.id.item_future_condition_tv);
+            TextView fWindTv = view.findViewById(R.id.item_future_wind_tv);
             TextView fTempTv = view.findViewById(R.id.item_future_temp_tv);
             ImageView fPicIv = view.findViewById(R.id.item_future_pic_iv);
 
-            WeatherInfoBean.ResultsBean.WeatherDataBean weatherDataBean = futureWeatherList.get(i);
+            WeatherInfoBean.ResultBean.FutureBean weatherDataBean = futureWeatherList.get(i);
             fDateTv.setText(weatherDataBean.getDate());
             fCondTv.setText(weatherDataBean.getWeather());
+            fWindTv.setText(weatherDataBean.getDirect());
             fTempTv.setText(weatherDataBean.getTemperature());
-            Picasso.with(getActivity()).load(weatherDataBean.getDayPictureUrl()).into(fPicIv);
         }
     }
 
@@ -171,40 +202,52 @@ public class WeatherFragment extends BaseFragment implements View.OnClickListene
         mIndexColdTv = view.findViewById(R.id.weather_index_cold_tv);
         mIndexSportTv = view.findViewById(R.id.weather_index_sport_tv);
         mIndexRayTv = view.findViewById(R.id.weather_index_ray_tv);
+        mAirCondTv = view.findViewById(R.id.weather_index_air_cond_tv);
 
         mIndexDressTv.setOnClickListener(this);
         mIndexCarTv.setOnClickListener(this);
         mIndexColdTv.setOnClickListener(this);
         mIndexSportTv.setOnClickListener(this);
         mIndexRayTv.setOnClickListener(this);
+        mAirCondTv.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        int index = 0;
+        IndexInfoBean.ResultBean.LifeBean lifeBean = mIndexInfoBean.getResult().getLife();
+
+        String title = "";
+        String message = "暂无数据";
         switch (view.getId()) {
             case R.id.weather_index_dress_tv:
-                index = 0;
+                title = "穿衣指数";
+                message = lifeBean.getChuanyi().getV() + "\n" + lifeBean.getChuanyi().getDes();
                 break;
             case R.id.weather_index_car_tv:
-                index = 1;
+                title = "洗车指数";
+                message = lifeBean.getXiche().getV() + "\n" + lifeBean.getXiche().getDes();
                 break;
             case R.id.weather_index_cold_tv:
-                index = 2;
+                title = "感冒指数";
+                message = lifeBean.getGanmao().getV() + "\n" + lifeBean.getGanmao().getDes();
                 break;
             case R.id.weather_index_sport_tv:
-                index = 3;
+                title = "运动指数";
+                message = lifeBean.getYundong().getV() + "\n" + lifeBean.getYundong().getDes();
                 break;
             case R.id.weather_index_ray_tv:
-                index = 4;
+                title = "紫外线指数";
+                message = lifeBean.getZiwaixian().getV() + "\n" + lifeBean.getZiwaixian().getDes();
+                break;
+            case R.id.weather_index_air_cond_tv:
+                title = "空调指数";
+                message = lifeBean.getKongtiao().getV() + "\n" + lifeBean.getKongtiao().getDes();
                 break;
         }
 
-        WeatherInfoBean.ResultsBean.IndexBean indexBean = mIndexBeanList.get(index);
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(indexBean.getTipt());
-        builder.setMessage(indexBean.getZs() + "\n" + indexBean.getDes());
+        builder.setTitle(title);
+        builder.setMessage(message);
         builder.setPositiveButton("确定", null);
         builder.show();
     }
